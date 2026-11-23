@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P5 support prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Noto+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a shipped SaaS product, calm and exact — a question for users, not a pitch.
+   IDEA: a metro map — each language is a line; every line has a station back to a person.
+   PICTURE: the working widget and the agent console themselves.
+   COLOUR and TYPE: white, line colours per language, black ink; Figtree.
+   LAYOUT: tabs on top; LMS page + chat side by side; console = switches row, queue + detail. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0e1116);--panel:light-dark(#f4f6f9,#171b22);--ink:light-dark(#111418,#eef1f5);--mute:light-dark(#5b6470,#9aa4b1);--line:light-dark(#dfe3e9,#2a303a);--blue:#0a5cff;--red:#e6261f;--amber:#ffb400;--green:#00a05a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif;overflow-x:clip}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding:14px max(4vw,16px);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px}
+.logo i{width:14px;height:14px;border-radius:50%;background:var(--blue);box-shadow:10px 0 0 var(--red),20px 0 0 var(--amber);margin-right:22px}
+nav{display:flex;gap:6px}
+nav a{padding:10px 16px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:600;min-height:44px;display:flex;align-items:center}
+nav a[aria-current=true]{background:var(--ink);color:var(--bg)}
+.note{font-size:13px;color:var(--mute);margin-left:auto}
+.band{padding:clamp(20px,3vw,40px) max(4vw,16px);max-width:1240px;margin:auto}
+h1{font-size:clamp(28px,4vw,40px);line-height:1.05;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--mute);margin:0 0 20px;max-width:70ch}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:24px}
+.lms{background:var(--panel);border-radius:16px;padding:20px;border:1px solid var(--line)}
+.lms h2{font-size:20px;margin:0 0 4px}.lms .crumb{font-size:13px;color:var(--mute)}
+.lesson{display:grid;gap:10px;margin-top:16px}
+.lesson div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chips button,.btn{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:44px;cursor:pointer}
+.chips button:hover,.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.danger{border-color:var(--red);color:var(--red)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.chat{border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;height:620px;background:var(--bg);box-shadow:0 18px 40px -24px rgba(0,0,0,.35)}
+.chat header{border:0;padding:14px 16px;background:var(--ink);color:var(--bg);border-radius:18px 18px 0 0}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.m{max-width:88%;padding:10px 14px;border-radius:14px;font-size:15px}
+.m.u{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.m.a{align-self:flex-start;background:var(--panel);border-bottom-left-radius:4px}
+.m.h{align-self:stretch;max-width:none;background:transparent;border:1px dashed var(--mute);color:var(--mute);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--ink);color:var(--bg);margin-bottom:6px}
+.cite{display:block;margin-top:8px;font-size:13px;color:var(--mute)}
+.cite b{color:var(--blue)}
+[dir=rtl]{font-family:"Noto Sans Arabic",Figtree,sans-serif;text-align:right}
+form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+input,select{font:inherit;font-size:16px;flex:1;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:44px;background:var(--bg);color:var(--ink)}
+.human{margin:0 12px 12px;text-align:center}
+.switches{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.sw{border:1px solid var(--line);border-radius:14px;padding:14px;border-top:6px solid var(--c)}
+.sw b{font-size:18px}.sw small{display:block;color:var(--mute);font-size:13px}
+.seg{display:flex;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;font:inherit;font-size:14px;border:0;background:var(--bg);color:var(--ink);min-height:40px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg);font-weight:600}
+.console{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:24px}
+.queue{display:flex;flex-direction:column;gap:8px}
+.q{text-align:left;font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:12px;cursor:pointer;border-left:6px solid var(--c)}
+.q[aria-current=true]{border-color:var(--ink);border-left-color:var(--c)}
+.q small{display:block;color:var(--mute);font-size:13px}
+.detail{background:var(--panel);border-radius:16px;padding:20px;border:1px solid var(--line)}
+dl{display:grid;grid-template-columns:9em minmax(0,1fr);gap:6px 12px;margin:12px 0}
+dt{color:var(--mute);font-size:14px}dd{margin:0}
+textarea{width:100%;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:120px;background:var(--bg);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.empty{color:var(--mute)}
+[hidden]{display:none!important}
+@media(max-width:860px){.grid,.console{grid-template-columns:minmax(0,1fr)}.chat{height:560px}.note{margin-left:0}}
+@media(prefers-reduced-motion:no-preference){.m{animation:in .25s ease-out}@keyframes in{from{opacity:0;transform:translateY(6px)}}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i></i>Kora LMS · Help</div>
+  <nav><a href="#learner" id="t-learner">Learner help chat</a><a href="#console" id="t-console">Agent console</a></nav>
+  <span class="note">Prototype v0.1 · fictional company, invented data — no real customer data</span>
+</header>
+
+<section id="v-learner" class="band">
+  <h1>Ask in your language. Get a cited answer — or a person.</h1>
+  <p class="sub">Pick a sample question or type your own. The assistant answers only routine "how do I…" questions from the English knowledge base, and hands grades, certificates, accessibility and personal-data requests to a native-speaking colleague.</p>
+  <div class="grid">
+    <div class="lms">
+      <span class="crumb">My courses › Data Literacy 101 › Week 4</span>
+      <h2>Week 4 — Cleaning a dataset</h2>
+      <div class="lesson"><div><span>Video: missing values</span><span>12 min</span></div><div><span>Quiz 4</span><span>opens Fri</span></div><div><span>Assignment: clean the survey file</span><span>due Sun</span></div></div>
+      <p class="crumb" style="margin-top:18px">Sample questions (one per case type of our eval-set)</p>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="chat" aria-label="Help chat">
+      <header><b>Help</b> <span style="opacity:.7;font-size:13px">· AI assistant, answers from our help centre</span></header>
+      <div class="msgs" id="msgs" aria-live="polite"><div class="m a">Hi! Ask your question in any of our 6 languages. You can talk to a person at any time.</div></div>
+      <button class="btn human" id="human">Talk to a person</button>
+      <form id="f"><input id="in" placeholder="Type your question…" autocomplete="off" aria-label="Your question"><button class="btn primary">Send</button></form>
+    </div>
+  </div>
+</section>
+
+<section id="v-console" class="band" hidden>
+  <h1>Native-speaker console</h1>
+  <p class="sub">Each language has its own switch. L3 = the assistant answers routine tickets and you sample them weekly. L2 = it only drafts, you approve. Off = every ticket comes to you, as today. Sensitive tickets always come to you.</p>
+  <div class="switches" id="switches"></div>
+  <div class="console">
+    <div><p class="crumb" style="color:var(--mute);font-size:14px;margin:0 0 8px">Queue — hand-offs and drafts to approve</p><div class="queue" id="queue"></div></div>
+    <div class="detail" id="detail"><p class="empty">Select a ticket in the queue.</p></div>
+  </div>
+</section>
+
+<script>
+{
+const LANGS={en:{n:"English",c:"#0a5cff",lvl:"L3",rate:"not run yet"},fr:{n:"French",c:"#7a3cff",lvl:"L3",rate:"not run yet"},es:{n:"Spanish",c:"#00a05a",lvl:"L3",rate:"not run yet"},pt:{n:"Portuguese",c:"#ffb400",lvl:"L2",rate:"not run yet"},pl:{n:"Polish",c:"#e6261f",lvl:"L2",rate:"not run yet"},ar:{n:"Arabic",c:"#111418",lvl:"L2",rate:"not run yet"}};
+const CASES=[
+ {q:"Como exporto as notas da turma para Excel?",l:"pt",cat:"Gradebook how-to",ans:"Para exportar as notas: abra o curso › Notas › Exportar › escolha \"Excel (.xlsx)\" e clique em Baixar. Só instrutores veem esta opção.",kb:"KB-GRADES-04 · Export the gradebook",conf:.86},
+ {q:"O professor lançou minha nota errada, tirei 14 e aparece 4. Podem corrigir?",l:"pt",sens:"Grade change request",ack:"Entendi. Pedidos sobre notas são tratados por uma pessoa: estou passando sua mensagem para um colega que fala português. Você receberá a resposta por e-mail."},
+ {q:"Jak zresetować hasło? Nie dostaję maila z linkiem.",l:"pl",cat:"Password how-to",ans:"Kliknij \"Nie pamiętasz hasła?\" na stronie logowania i sprawdź folder spam. Jeśli Twoja uczelnia używa logowania SSO, hasło zmienisz w systemie uczelni.",kb:"KB-ACCOUNT-01 · Reset your password",conf:.78},
+ {q:"ابني يحتاج وقتًا إضافيًا في الامتحانات بسبب عسر القراءة، كيف أطلب ذلك؟",l:"ar",sens:"Accessibility accommodation",ack:"شكرًا لرسالتك. طلبات التسهيلات يتولاها شخص من فريقنا يتحدث العربية، وسيتواصل معك قريبًا."},
+ {q:"slt jarrive pas a voir le quiz de demain il est caché??",l:"fr",cat:"Quiz visibility",ans:"Un quiz devient visible à la date d'ouverture choisie par l'enseignant. S'il n'apparaît pas après cette date, contactez votre enseignant.",kb:"KB-QUIZ-02 · When a quiz becomes visible",conf:.81},
+ {q:"How do I submit the right file? I uploaded the wrong one.",l:"en",cat:"Assignment how-to",ans:"Open the assignment › Edit submission › remove the file › upload the right one › Submit. This works until the deadline; after it, ask your instructor.",kb:"KB-ASSIGN-03 · Resubmit an assignment",conf:.9},
+ {q:"Czy platforma integruje się z USOS?",l:"pl",nosrc:true,ack:"Nie mam pewnej odpowiedzi w naszej bazie wiedzy, więc przekazuję pytanie koledze mówiącemu po polsku."},
+ {q:"Come posso caricare un video nella lezione?",l:"other",ack:"Sorry — I can't answer in Italian yet. A colleague will reply to you; your request keeps its place in the queue."}
+];
+const SENS=[/\bnota|\bnote\b|grade|ocen|calificaci|درج|certific|certyfik|شهاد|accessib|dyslex|dislex|dysleks|عسر|handicap|niepełnospr|rgpd|rodo|gdpr|données|dados pessoais|dane osobowe|delete my data|usuń|supprim/i];
+let queue=[
+ {id:"T-1041",l:"ar",cat:"Accessibility accommodation",reason:"sensitive — person only",text:"طلب وقت إضافي في الامتحانات (تفاصيل صحية غير محفوظة في السجل)",src:"—",conf:"—"},
+ {id:"T-1043",l:"pt",cat:"Gradebook how-to",reason:"L2 draft to approve",text:"Como exporto as notas da turma para Excel?",draft:CASES[0].ans,src:CASES[0].kb,conf:"0.86"},
+ {id:"T-1046",l:"pl",cat:"Unknown",reason:"no source in the KB",text:"Czy platforma integruje się z USOS?",src:"none found",conf:"0.31"}
+];
+const $=s=>document.querySelector(s), msgs=$("#msgs");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dir=l=>l==="ar"?' dir="rtl"':'';
+function add(cls,html,l){msgs.insertAdjacentHTML("beforeend",`<div class="m ${cls}"${dir(l)}>${html}</div>`);msgs.scrollTop=msgs.scrollHeight}
+function guess(t){if(/[؀-ۿ]/.test(t))return"ar";if(/[ąęłńśźż]|\bjak\b|\bczy\b/i.test(t))return"pl";if(/ção|ões|\bvocê|\bcomo\b|\bnão\b/i.test(t))return"pt";if(/\bcómo\b|\bpor qué\b|ñ|\bno encuentro/i.test(t))return"es";if(/\bje\b|\bcomment\b|\bbonjour|é|è/i.test(t))return"fr";if(/\bcome\b|\bposso\b/i.test(t))return"other";return"en"}
+function handoff(c,l,cat,reason,text){queue.unshift({id:"T-"+(1050+queue.length),l,cat,reason,text,src:c&&c.kb||"—",conf:c&&c.conf?String(c.conf):"—",draft:c&&c.draft});renderQueue()}
+function respond(text,c){
+  add("u",esc(text),c?c.l:guess(text));
+  const l=c?c.l:guess(text), L=LANGS[l];
+  setTimeout(()=>{
+    if(!L){add("h","Language not supported → sent to the human queue with an English summary. Priority unchanged.");if(c)add("a",esc(c.ack),l);handoff(null,"other","Unsupported language","language not covered",text);return}
+    const sens=c?c.sens:(SENS[0].test(text)&&!/export/i.test(text)?"Sensitive request":null);
+    if(sens){add("a",esc(c?c.ack:"This request is handled by a person. I am passing it to a "+L.n+"-speaking colleague."),l);add("h",`Hand-off → ${L.n}-speaking agent · reason: ${esc(sens)} · nothing answered by the AI`);handoff(null,l,sens,"sensitive — person only",text);return}
+    if(!c||c.nosrc){add("a",esc(c?c.ack:"I could not find this in our help centre, so a "+L.n+"-speaking colleague will answer you."),l);add("h",`Hand-off → ${L.n}-speaking agent · reason: no source found (the assistant never answers without one)`);handoff(null,l,"Unknown","no source in the KB",text);return}
+    if(L.lvl==="off"){add("h",`${L.n} is switched off → a person answers, as today.`);handoff(c,l,c.cat,"language switched off",text);return}
+    if(L.lvl==="L2"){add("a",`<span class="tag">Being checked</span><br>A ${L.n}-speaking colleague is checking the answer before it is sent to you.`,l);handoff({...c,draft:c.ans},l,c.cat,"L2 draft to approve",text);return}
+    add("a",`<span class="tag">AI answer</span><br>${esc(c.ans)}<span class="cite">Source (English original): <b>${esc(c.kb)}</b> · confidence ${c.conf}</span>`,l);
+  },450);
+}
+$("#chips").innerHTML=CASES.map((c,i)=>`<button data-i="${i}"${dir(c.l)}>${esc(c.q.length>46?c.q.slice(0,44)+"…":c.q)}</button>`).join("");
+$("#chips").addEventListener("click",e=>{const b=e.target.closest("button");if(b){const c=CASES[+b.dataset.i];respond(c.q,c)}});
+$("#f").addEventListener("submit",e=>{e.preventDefault();const t=$("#in").value.trim();if(!t)return;$("#in").value="";const c=CASES.find(x=>x.q.toLowerCase()===t.toLowerCase());respond(t,c)});
+$("#human").addEventListener("click",()=>{add("h","You asked for a person → passed to the human queue with the conversation so far. Average wait in your language is shown by e-mail.");handoff(null,"en","Asked for a person","user clicked 'talk to a person'","(conversation transcript)")});
+
+function renderSwitches(){$("#switches").innerHTML=Object.entries(LANGS).map(([k,L])=>`<div class="sw" style="--c:${L.c}"><b>${L.n}</b><small>Eval: ${L.rate} · passes at 57 % sendable</small><div class="seg" role="group" aria-label="${L.n} trust level">${["L3","L2","off"].map(v=>`<button data-l="${k}" data-v="${v}" aria-pressed="${L.lvl===v}">${v}</button>`).join("")}</div></div>`).join("")}
+$("#switches").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;LANGS[b.dataset.l].lvl=b.dataset.v;renderSwitches()});
+let sel=null;
+function renderQueue(){$("#queue").innerHTML=queue.length?queue.map((t,i)=>`<button class="q" data-i="${i}" style="--c:${(LANGS[t.l]||{c:"#8a8f98"}).c}" aria-current="${sel===t}"><b>${t.id} · ${(LANGS[t.l]||{n:"Other language"}).n}</b><small>${esc(t.cat)} — ${esc(t.reason)}</small></button>`).join(""):'<p class="empty">Queue empty.</p>'}
+$("#queue").addEventListener("click",e=>{const b=e.target.closest(".q");if(!b)return;sel=queue[+b.dataset.i];renderQueue();renderDetail()});
+function renderDetail(){const t=sel;if(!t){$("#detail").innerHTML='<p class="empty">Select a ticket in the queue.</p>';return}
+ $("#detail").innerHTML=`<b style="font-size:20px">${t.id}</b><dl><dt>Language</dt><dd>${(LANGS[t.l]||{n:"Other language"}).n}</dd><dt>Category</dt><dd>${esc(t.cat)}</dd><dt>Why it is here</dt><dd>${esc(t.reason)}</dd><dt>Sources found</dt><dd>${esc(t.src)}</dd><dt>Confidence</dt><dd>${esc(t.conf)}</dd><dt>Customer wrote</dt><dd${dir(t.l)}>${esc(t.text)}</dd></dl>
+ <label for="rep" style="font-size:14px;color:var(--mute)">${t.draft?"AI draft — edit if needed, then approve":"Your reply (no AI draft for sensitive or unsourced tickets)"}</label><textarea id="rep"${dir(t.l)}>${t.draft?esc(t.draft):""}</textarea>
+ <div class="row"><button class="btn primary" id="ok">${t.draft?"Approve and send":"Send reply"}</button>${t.draft?'<button class="btn" id="ed">Sent with edits</button><button class="btn danger" id="rj">Reject draft</button>':""}</div><p class="empty" id="done" style="font-size:14px"></p>`;
+ const close=msg=>{queue=queue.filter(x=>x!==t);sel=null;renderQueue();$("#detail").innerHTML=`<p class="empty">${msg}</p>`};
+ $("#ok").onclick=()=>close(t.draft?"Sent unchanged — counted as 'sendable without edit' for "+((LANGS[t.l]||{n:""}).n)+".":"Reply sent by you.");
+ if(t.draft){$("#ed").onclick=()=>close("Sent with edits — counted as 'not sendable as is'.");$("#rj").onclick=()=>close("Draft rejected — you will answer from scratch; reason logged.")}
+}
+function route(){const v=location.hash==="#console"?"console":"learner";$("#v-learner").hidden=v!=="learner";$("#v-console").hidden=v!=="console";$("#t-learner").setAttribute("aria-current",v==="learner");$("#t-console").setAttribute("aria-current",v==="console")}
+addEventListener("hashchange",route);route();renderSwitches();renderQueue();
+}
+</script>
+</body>
+</html>
