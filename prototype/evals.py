@@ -11,6 +11,9 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pandas as pd
 
+# Windows consoles default to cp1252 and crash on arrows and non-Latin answers (Polish, Arabic).
+sys.stdout.reconfigure(encoding="utf-8")
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EVAL = os.path.join(ROOT, "evals", "eval_set_v0.csv")
 OUT = os.path.join(ROOT, "evals", "run_v0.csv")
