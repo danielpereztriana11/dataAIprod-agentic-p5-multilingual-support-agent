@@ -65,6 +65,9 @@
 - `evals/eval_set_v0.csv` (51 invented cases, no personal data) and `evals/run_v0.csv` (prototype outputs and the two graders' yes / no) are in this Git repository: visible to the team members and the course teachers who have access to the repo; nothing else leaves it.
 - The eval-set is **never used for tuning**: rules, thresholds and prompts are changed only on `prototype/data/` (synthetic training and demo tickets). Any eval row looked at while changing the prototype is named in `evals/report_v0.md` §4 and treated as demo data.
 - With an LLM key, eval tickets are sent to the LLM provider: invented data only; real tickets would need the DPA and sub-processor conditions of Session 1 row 2.
-## Session 5 — counter-metrics and the segments we report (to come)
+## Session 5 — counter-metrics and the segments we report
+- **Counter-metrics:** first-response time of the tickets the agent hands over, per language (the people it does not serve) · native-speaker review time against the 0.5 FTE of the business case (`05_metrics.md` §3).
+- **Segments reported:** language (en, fr, es, pt, pl, ar, unsupported) · dialect or mixed language (Darija) · user role · customer type — every metric per language first, the average last.
+- **Harm threshold that stops the rollout:** if, in the weekly native-speaker sample, a language's wrong-answer rate is above its business-case value (core 4 %, Portuguese 6 %, Polish / Arabic 10 %) for two consecutive weeks, or one sensitive ticket receives an AI answer, that language drops to L2 the same day (`prototype/switch.json`) until the gap is explained. **Owner: Head of Support, reviewed monthly with the DPO.**
 ## Session 6 — protected segments and the harm threshold that stops an experiment (to come)
 ## Session 7 — accountable owner, rollback authority, incident path (to come)
