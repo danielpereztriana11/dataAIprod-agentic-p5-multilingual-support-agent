@@ -50,7 +50,7 @@ What happens when… (one line each)
 - Tested on (date, by whom): [date], by [name] — French set to `off`, `python prototype/app.py "Comment changer ma photo de profil ?"` returned "escalate · language switched off"; set back to `L3`.
 
 ## 7. Data
-- Training / demo data (`data/`): `prototype/data/tickets_synthetic.csv` — 168 synthetic tickets (156 in the 6 languages, 12 in Italian, German, Dutch, Korean for "other") written by the team for the router; `prototype/data/demo_tickets.csv` — 12 demo tickets; `prototype/kb/` — 35 fictional English help articles. All invented, no real data.
+- Training / demo data (`data/`): `prototype/data/tickets_synthetic.csv` — 156 synthetic tickets (144 in the 6 languages — 24 per language — and 12 in Italian, German, Dutch, Korean for "other") written by the team for the router; `prototype/data/demo_tickets.csv` — 12 demo tickets; `prototype/kb/` — 35 fictional English help articles. All invented, no real data.
 - Evaluation data (`evals/eval_set_v0.csv`): 51 cases (7 languages · 24 hand-over · 27 automatable, 12 of them in the core languages), labelled by the team before the run, origin in every row; **never used for tuning**.
 - Personal data present? None: all tickets are invented. In production, ticket text is personal data (we are processor); logs and storage rules are in `governance.md` (Sessions 3 and 4).
 
