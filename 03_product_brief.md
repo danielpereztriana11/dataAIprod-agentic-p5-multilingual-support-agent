@@ -3,7 +3,7 @@
 > Session 3. One page. Start from `01_problem_statement.md` and `02_investment_memo.md` — do not start from a blank page.
 > v1 in class (16 October). v2 before Session 4 (30 October), after your users: fill the last two sections.
 
-**Team:** P5 project team (members to be added) · **Starting point:** P5 · **Version:** v1 — [23 November 2026]
+**Team:** P5 project team (members to be added) · **Starting point:** P5 · **Version:** v2 — 23 November 2026
 
 ## 1. Problem, user, do-nothing  *(from 01)*
 - **Problem in one sentence (with a number):** Learners and LMS administrators in our 14 countries ask questions in their own language while the knowledge base is in English; tickets in Portuguese, Polish and Arabic wait 2–3× longer (P5 proposal, measured), and in our scenario 4,000 non-English tickets a month × 6 extra minutes = 400 support hours a month, ≈ €10k a month (guesses, `01_problem_statement_P05_.md`).
@@ -49,7 +49,7 @@
 - **MUST (≤ 4):** language detection + sensitive router + hand-off note · per-language switch + per-language eval report · cited answer in the customer's language.
 - **SHOULD:** none this time — with eight candidates, ≤ 4 MUST and ≥ 5 WON'T leave no room; native-speaker feedback on drafts (approve / edit / reject + reason) is the first candidate for v2.
 - **COULD:** none this time — pre-translated top articles in PT/PL/AR is the hurdle project, kept as the baseline we compare against, not a feature.
-- **WON'T this time (≥ 5) — this is the out-of-scope list:** proactive chat widget on every page · fine-tuning on historical tickets · account actions by the agent · grade and assessment explanations · languages beyond the 6. *(Dated [23 november 2026]; revisited after the Session 5 eval.)*
+- **WON'T this time (≥ 5) — this is the out-of-scope list:** proactive chat widget on every page · fine-tuning on historical tickets · account actions by the agent · grade and assessment explanations · languages beyond the 6. *(Dated 23 november 2026; revisited after the Session 5 eval.)*
 - **The feature that tests our flip assumption, and why it is a MUST:** the **cited answer in the customer's language** — it is only third by RICE because its confidence is 50 %: it *is* the guess that flips the decision (≈ 57 % resolution of automatable core-language tickets to beat do-nothing, `02_investment_memo.md`). We build it first to learn whether that number is reachable.
 - **The cut that hurt the most:** the chat widget on every LMS page — highest reach, but it talks to every learner at a higher trust level than this MVP can justify, and it would hide per-language failures behind volume.
 
@@ -70,7 +70,7 @@ Sources · volume and labels · coverage by segment · legal basis · leakage ·
 Surface · speed needed · format · fallback · who sees the log: **surface** — the help-centre chat of the LMS for learners and admins (L3 languages) and the helpdesk console of the native-speaking agents (L2 drafts and hand-offs) · **speed** — answer in < 10 s in the chat; drafts ready before the agent opens the ticket · **format** — answer in the customer's language, "AI answer" label, link to the English source article, "talk to a person" button; for the agent, a hand-off note (language, category, reason, sources, confidence) · **fallback** — any failure, timeout or low confidence → the native-speaking human queue, never a guess · **who sees the log** — Head of Support and per-language leads (per-language dashboard), DPO on request (conversation log: language, category, sources, model version, answer/escalate).
 
 ## 7. Success criterion — one sentence
-> By [23 novembre 2026], on our 200-case eval-set (stratified by language, labelled before the first run), at least **57 %** of automatable core-language tickets get a cited answer in the customer's language that two independent native-speaker graders would send without editing — and 100 % of sensitive tickets (grades, assessments, certificates, accessibility, personal-data requests) are handed over to a person, with no answer sent without a valid KB citation; Portuguese, Polish and Arabic reported separately.
+> By [24 novembre 2026], on our 200-case eval-set (stratified by language, labelled before the first run), at least **57 %** of automatable core-language tickets get a cited answer in the customer's language that two independent native-speaker graders would send without editing — and 100 % of sensitive tickets (grades, assessments, certificates, accessibility, personal-data requests) are handed over to a person, with no answer sent without a valid KB citation; Portuguese, Polish and Arabic reported separately.
 
 *Threshold = our flip point: ≈ 57 % to beat do-nothing (≈ 52 % to beat the hurdle), `02_sizing_P05.xlsx`, Decision tab.*
 
@@ -84,7 +84,18 @@ Surface · speed needed · format · fallback · who sees the log: **surface** �
 ## 9. What the users changed
 | Change | Evidence (who said / did what — e.g. “3 of 3 never opened the tab”) |
 |---|---|
-| | |
+| **Dialects and mixed languages added as a segment**: the language detector and the eval-set must cover Moroccan Darija and French + Darija mixes, not only standard Arabic; a mixed or dialect ticket the detector is unsure about goes to the native-speaker queue. | Interview 1: he got help from a Moroccan classmate on WhatsApp "in French and a bit of Darija" — the real alternative to our support speaks his dialect. |
+| **Deadline tickets are prioritised in the hand-off**: a ticket about a blocked submission or login near a deadline gets the cited troubleshooting steps at once and jumps the human queue. | Interview 1: blocked while submitting an assignment, page not loading; what annoyed him most was "the lack of responsiveness of the support" and the stress of the deadline. |
+| **"No source" is a hand-off, never a guess — and incomplete articles are logged as KB gaps** for the KB owner, by language. | Interview 2: "the options were not clear and the information was very incomplete"; he followed a course he did not need — "I lost my time for nothing". |
+| **Questions that mix a procedure and an academic decision are split**: the agent explains the cited procedure, a person decides (exemption, assessment). One case of this type added to the eval-set at v1. | Interview 2: his question (exemption from a mandatory course) needed a decision, not only information; the office he reached could not answer in his language. |
+| **The way back goes to a native speaker of the user's language, with a visible wait time**, not just "a human". | Interview 2: the language-centre staff "did not speak English well"; interview 3: he waited several days for a native speaker. |
+| **The answer to "how do I change the interface language" shows the menu icon and its position, not only its name.** | Interview 3: the platform was in Korean, he could not use Ctrl+F or read the menu names, and copy-pasting section by section into a translator did not help him find the setting. |
+| **The learner must see one simple help chat; the agent console is a separate staff tool, and an L2 answer must say when it will arrive** (to build in the next prototype version). | Usability test: 0 of 2 testers finished the task; both did not understand the two pages, found the site "a bit too complex", and would never have thought of switching Portuguese from L2 to L3 to get the answer. |
 
 ## 10. What they could not decide
 (The threshold, the model, the legal basis… — and who or what decides instead.)
+- **The success threshold (57 %)** — users judge one answer, not a rate; it comes from our flip point in `02_sizing_P05.xlsx` and is checked by two native-speaker graders on the eval-set.
+- **Which requests are "sensitive"** — no user can draw the line between a procedure and a decision (interview 2: exemption); the DPO and the Head of Support decide, written in `governance.md` row 4.
+- **Which languages and dialects we support** — interview 3 needed Korean, interview 1 writes in Darija; the Product Manager decides per language on the evidence of its eval (per-language switch).
+- **The model and the legal basis** — invisible to users; the team decides the rung per part (§5), the DPO decides the legal basis and retention (`governance.md`, Session 3).
+- **Whether they trust an AI answer** — the interviews were about the past, not about our agent; the usability test and the per-language sample in production will tell us.
