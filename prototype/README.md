@@ -32,7 +32,7 @@ python prototype/evals.py --grades evals/run_v0.csv
 
 ## Data
 - `kb/` — 35 fictional English help articles written by the team (no real product).
-- `data/tickets_synthetic.csv` — 156 synthetic training tickets in 6 languages + 12 in other languages, written for the router. **Never the eval-set.**
+- `data/tickets_synthetic.csv` — 156 synthetic training tickets: 144 in the 6 languages (24 per language) + 12 in other languages, written for the router. **Never the eval-set.**
 - `data/demo_tickets.csv` — 12 demo tickets used to debug and to demo. **Never the eval-set.**
 
 Rule: never tune a threshold, a rule or the prompt while looking at `evals/`.
