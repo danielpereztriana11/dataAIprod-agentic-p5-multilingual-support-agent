@@ -1,0 +1,5 @@
+pandas>=2.0
+scikit-learn>=1.3
+# optional, only to use a real LLM in step 3:
+# anthropic>=0.30
+# google-genai>=1.0

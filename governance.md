@@ -45,7 +45,26 @@
 | 5. Policy gate and send | gate L4 (block → human) · send: L3 languages by the agent with an "AI answer" label and "talk to a person"; L2 languages by the native speaker | a promise the company cannot keep (grade, deadline, deletion) |
 | 6. Logging | L4 | without logs per language, the Simpson's-paradox risk cannot be seen |
 
-## Session 4 — human-in-the-loop points and the override switch (to come)
+## Session 4 — human-in-the-loop points and the override switch
+**Human checkpoints ⊘ (as built in `/prototype`)**
+| # | Where | Kind | Who | What triggers it |
+|---|---|---|---|---|
+| 1 | After the router / routing rule | **abstention** | native-speaking agent of the ticket's language | language not covered or unsure, category confidence < 0.50, language switched off (`route_rule.py`) |
+| 2 | Routing rule — sensitive | **abstention (person only)** | native-speaking agent | grades, assessments, certificates, accessibility, personal-data requests, completion records (governance.md row 4) |
+| 3 | Routing rule — security | **abstention** | security queue (support lead) | instruction injection, requests for passwords, keys or another institution's data |
+| 4 | After the policy check | **abstention** | native-speaking agent, with the block reason | no citation, citation not retrieved, a promise, a secret, language mismatch (`policy.py`) |
+| 5 | Before sending, L2 languages (pt, pl, ar) | **approval** | native-speaking agent approves, edits or rejects the draft | every draft in an L2 language (`switch.json`) |
+| 6 | After sending, L3 languages (en, fr, es) | **sampling** | native-speaking agent reviews a weekly sample per language | every AI answer sent; sample size to set in Session 5 |
+
+**The override switch ⏻**
+- **Owner:** Head of Support. **File:** `prototype/switch.json`, one line per language (L3 / L2 / off), read on every ticket — no deployment. If the file cannot be read, every language is **off** (fail safe).
+- **Scope:** one language, for everyone. The DPO can ask the Head of Support to switch a language off; the Product Manager decides to switch a language back up to L3, on the evidence of its eval.
+- **Tested:** [date], by [name] — French set to `off`, a French ticket returned "escalate · language switched off", French set back to `L3`.
+
+**Where the eval data is stored and who can see it**
+- `evals/eval_set_v0.csv` (51 invented cases, no personal data) and `evals/run_v0.csv` (prototype outputs and the two graders' yes / no) are in this Git repository: visible to the team members and the course teachers who have access to the repo; nothing else leaves it.
+- The eval-set is **never used for tuning**: rules, thresholds and prompts are changed only on `prototype/data/` (synthetic training and demo tickets). Any eval row looked at while changing the prototype is named in `evals/report_v0.md` §4 and treated as demo data.
+- With an LLM key, eval tickets are sent to the LLM provider: invented data only; real tickets would need the DPA and sub-processor conditions of Session 1 row 2.
 ## Session 5 — counter-metrics and the segments we report (to come)
 ## Session 6 — protected segments and the harm threshold that stops an experiment (to come)
 ## Session 7 — accountable owner, rollback authority, incident path (to come)
