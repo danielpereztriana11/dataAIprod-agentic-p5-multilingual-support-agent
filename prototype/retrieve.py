@@ -1,7 +1,11 @@
 """Step 3a — retrieval over the English KB (kb/*.md), chunked by '## ' heading.
 v0 = TF-IDF on character n-grams (catches cognates: export/exportar, notification/notificaciones).
 It does NOT understand Polish or Arabic against English text: that is a known limit, measured by the eval."""
-import glob, os, re
+
+import glob
+import os
+import re
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 

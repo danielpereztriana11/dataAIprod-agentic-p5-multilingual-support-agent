@@ -1,5 +1,10 @@
 """The workflow: router -> routing rule -> retrieve + draft -> policy check. No loop, no tools."""
-import router, route_rule, retrieve, draft as drafter, policy
+
+import draft as drafter
+import policy
+import retrieve
+import route_rule
+import router
 
 
 def run_one(text):
@@ -16,5 +21,12 @@ def run_one(text):
         decision, reason = "escalate", "policy block: " + why
     send = route_rule.switch_state(r["language"]) if decision == "draft" else "person"
     # L3: the agent sends with an "AI answer" label · L2: ⊘ a native speaker approves before sending
-    return dict(r, decision=decision, send=send, reason=reason, draft=out, policy=status,
-                citations=[f"{p['article']} · {p['section']} ({p['score']:.2f})" for p in passages])
+    return dict(
+        r,
+        decision=decision,
+        send=send,
+        reason=reason,
+        draft=out,
+        policy=status,
+        citations=[f"{p['article']} · {p['section']} ({p['score']:.2f})" for p in passages],
+    )

@@ -1,7 +1,10 @@
 """Step 2 — the routing rule (rung 1: rules). spec.md · user_workflow 'route'.
 Order matters: language first, then security, then sensitive (governance.md row 4), then confidence.
 The rule can only send a ticket TO a person; it never decides alone to answer a sensitive one."""
-import json, os, re
+
+import json
+import os
+import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,14 +25,16 @@ SENSITIVE = re.compile(
     r"|rgpd|gdpr|rodo|usuni\w*.{0,30}dan"
     r"|certificat\w*.{0,40}(never|not|jamais|en attente|pending|nunca|nie )|(no encuentro|not received|jamais re[çc]u).{0,20}certificad"
     r"|completion date|date de (fin|compl)|cheat|triche|plagi|why did i (get|fail)|por qu[ée] me pusieron|pourquoi j'ai eu",
-    re.I)
+    re.I,
+)
 
 SECURITY = re.compile(
     r"ignore\w*\s.{0,25}(instruction|rule|r[eè]gle|regla|manual|restrict)|ignora|zignoruj|تجاهل"
     r"|admin\w*\s+password|mot de passe admin|contraseña de administrador|senha de administrador|hasło administratora"
     r"|api (key|credential)|credenciales api|clés? api|chaves api|klucze api"
     r"|(another|other|autre|otra|outra|innej|أخرى).{0,20}(universit|institution|[ée]tablissement|school|école|company|empresa|uczel)",
-    re.I)
+    re.I,
+)
 
 
 def switch_state(lang):

@@ -22,3 +22,7 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# Prototype: long multilingual regexes and print lines are kept readable on one line.
+"prototype/*" = ["E501", "E731", "E741", "B008"]

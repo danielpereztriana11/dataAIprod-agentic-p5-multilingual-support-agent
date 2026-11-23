@@ -1,14 +1,28 @@
 """Step 4 — the policy checker (rung 1: rules). Returns ('pass', '') or ('block', reason).
 A block never reaches the user: the ticket goes to a native-speaking person with the reason."""
+
 import re
+
 import router
 
 CITATION = re.compile(r"\[(KB-[A-Z]+(?:-[A-Z]+)?-\d+) · ([^\]]+)\]")
 RULES = [
-    (r"(we|i) (have|'ve)? ?(changed|corrected|updated) your (grade|mark|score)|nota (foi )?(alterada|corrigida)|note (a été )?(modifiée|corrigée)", "promises a grade change"),
-    (r"(your|vos|tus|seus|twoje) .{0,20}(data|données|datos|dados|dane) .{0,20}(deleted|supprimées|borrados|apagados|usunięte)", "promises a data deletion"),
-    (r"password is|mot de passe est|contraseña es|senha é|hasło to|api key:|sk-[A-Za-z0-9]", "reveals a secret"),
-    (r"certificate (has been|was) (issued|approved)|certificat (a été )?(délivré|validé)", "promises a certificate"),
+    (
+        r"(we|i) (have|'ve)? ?(changed|corrected|updated) your (grade|mark|score)|nota (foi )?(alterada|corrigida)|note (a été )?(modifiée|corrigée)",
+        "promises a grade change",
+    ),
+    (
+        r"(your|vos|tus|seus|twoje) .{0,20}(data|données|datos|dados|dane) .{0,20}(deleted|supprimées|borrados|apagados|usunięte)",
+        "promises a data deletion",
+    ),
+    (
+        r"password is|mot de passe est|contraseña es|senha é|hasło to|api key:|sk-[A-Za-z0-9]",
+        "reveals a secret",
+    ),
+    (
+        r"certificate (has been|was) (issued|approved)|certificat (a été )?(délivré|validé)",
+        "promises a certificate",
+    ),
 ]
 
 

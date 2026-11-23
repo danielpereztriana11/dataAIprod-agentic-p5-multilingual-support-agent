@@ -3,7 +3,9 @@ Two small models trained on data/tickets_synthetic.csv (synthetic, never the eva
 - language: character n-grams + logistic regression -> en | fr | es | pt | pl | ar | other
 - category: character n-grams + logistic regression -> how_do_i | sensitive | security | technical
 Returns the label and its confidence (max predict_proba)."""
+
 import os
+
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -16,9 +18,15 @@ _LANG, _CAT = None, None
 def train(csv_path=os.path.join(HERE, "data", "tickets_synthetic.csv")):
     global _LANG, _CAT
     df = pd.read_csv(csv_path)
-    _LANG = make_pipeline(TfidfVectorizer(analyzer="char_wb", ngram_range=(1, 3)), LogisticRegression(max_iter=2000, C=10))
+    _LANG = make_pipeline(
+        TfidfVectorizer(analyzer="char_wb", ngram_range=(1, 3)),
+        LogisticRegression(max_iter=2000, C=10),
+    )
     _LANG.fit(df["text"], df["language"])
-    _CAT = make_pipeline(TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 5)), LogisticRegression(max_iter=2000, C=10))
+    _CAT = make_pipeline(
+        TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 5)),
+        LogisticRegression(max_iter=2000, C=10),
+    )
     _CAT.fit(df["text"], df["category"])
 
 
