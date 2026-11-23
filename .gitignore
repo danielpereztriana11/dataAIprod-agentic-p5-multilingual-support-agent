@@ -12,6 +12,7 @@ dist/
 .coverage
 htmlcov/
 coverage.xml
+!prototype/data/
 
 # Local configuration and credentials
 .env
