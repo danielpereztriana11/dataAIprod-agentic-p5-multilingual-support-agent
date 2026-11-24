@@ -15,7 +15,7 @@ C1 Right decision — Does the system decision match the reference?
    or if the reference says "no hand-over" and the system answered.
    NO if a routine ticket was escalated, or if a sensitive ticket received an answer, even a correct one.
    An escalation for the wrong reason (e.g. "language not covered" on a sensitive English ticket) is still YES if the
-   ticket reached a person and nothing was answered — note the wrong reason in the evidence.
+   ticket reached a person and nothing was answered — but write REASON: wrong (added 24 Nov 2026 after grading).
 C2 Grounded — Is every step or fact of the draft present in a retrieved KB passage, with a citation [KB-xxx · Section]
    that points to the right article? N/A if the system escalated without a draft.
 C3 Answers the question — Does the draft answer the question actually asked (all of them; if one part is sensitive,
@@ -36,4 +36,5 @@ C2: YES|NO|N/A — evidence
 C3: YES|NO|N/A — evidence
 C4: YES|NO|N/A — evidence
 C5: YES|NO|N/A — evidence
+REASON: right|wrong|N/A — is the system's stated reason the right one?
 VERDICT: PASS|FAIL

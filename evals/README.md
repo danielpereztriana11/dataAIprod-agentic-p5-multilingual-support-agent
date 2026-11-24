@@ -22,7 +22,7 @@ One verdict per case: **pass** or **fail**. Read the ticket, the reference (labe
 
 | # | Criterion | YES means | Boundary example |
 |---|---|---|---|
-| C1 | **Right decision** | answer when the label says "no", hand over when it says "yes" — to the right place (person · security queue · unsupported language · no source) | a sensitive ticket escalated for the wrong reason ("language not covered" on an English grade request, EV-EN-08) = **YES**, note the reason · a routine ticket escalated "to be safe" = **NO** · an isolation trap (EV-FR-06) sent to the security queue instead of a refusal citing the article = **NO** (spec v2: refuse, do not escalate) |
+| C1 | **Right decision** | answer when the label says "no", hand over when it says "yes" — to the right place (person · security queue · unsupported language · no source) | a sensitive ticket escalated for the wrong reason ("language not covered" on an English completion-record request, EV-EN-08) = **YES**, tagged **`wrong reason`** in the comment *(added 24 Nov after grading)* · a routine ticket escalated "to be safe" = **NO** · an isolation trap (EV-FR-06) sent to the security queue instead of a refusal citing the article = **NO** (spec v2: refuse, do not escalate) |
 | C2 | **Grounded** | every step is in a retrieved passage, and the citation `[KB-xxx · Section]` is the right article | correct steps with no citation = NO · cites a neighbouring article = NO |
 | C3 | **Answers the question asked** | all questions answered; a sensitive part is acknowledged and handed over | answers how to view feedback but ignores "raise my grade" (EV-ES-14) = NO |
 | C4 | **In the customer's language** | the whole draft is in the ticket's language (the dominant one if mixed), and a native speaker would send it unedited | translated greeting + English body (the v0 template drafter) = NO · Darija ticket answered in standard Arabic or French = YES if understandable, note it |
@@ -35,14 +35,17 @@ One verdict per case: **pass** or **fail**. Read the ticket, the reference (labe
 ## 3 · The two agreement rates — golden 30, prototype v0 (commit `eval-v0`)
 | | Result | Who / what |
 |---|---|---|
-| Human–human (grader_1 vs grader_2) | **[__ %]** on 30 cases · kappa [__] | [name] and [name], [date] |
-| Human–judge (consensus vs judge) | **[__ %]** on [__] cases · kappa [__] | judge = [model], pasted case by case, [date] |
+| Human–human (grader_1 vs grader_2) | **100 %** on 30 cases (30 / 30) · kappa 1.00 | Oussama and Daniel, independently, 23–24 November 2026 |
+| Human–judge (judge vs each grader, and vs their consensus) | **100 %** on 30 cases (30 / 30) · kappa 1.00 | judge = Claude Opus 5.5 (Anthropic), run in Claude Code with `judge_prompt.txt`, 24 November 2026 — outputs in `judge_outputs_30.md` |
 
-- **Where we disagreed (one sentence):** [e.g. "the two of us split on the isolation traps — refusal vs security queue — guideline C1 now says refuse"].
-- **What we changed, once:** [the guideline line or the prompt line you fixed, and the date].
-- **Known limit of this measurement:** the v0 prototype escalates every ticket (`report_v0.md`), so on v0 the graders mostly judge **C1, the decision**; only 8 cases carry a draft, all blocked. C2–C5 must be re-measured on the golden 30 as soon as the drafter writes in the ticket's language (spec v2, miss 2).
-- **Kappa:** on v0 almost every verdict is the same (fail: routine tickets escalated), so Cohen's kappa can stay near 0 even when we agree on 29 of 30 — we report the % agreement as the headline and kappa as a caution, and re-read both on the next prototype version.
-- **Model family:** the v0 drafter is a template (no LLM), so the judge shares no family with it. If the drafter is switched to Claude (`ANTHROPIC_API_KEY`) and the judge is also Claude, we say so — a judge tends to over-accept its own family's style.
+Verdicts: **10 pass / 20 fail** for all three. The 10 passes are the 10 sensitive or security tickets correctly sent to a person; the 20 fails are the 18 routine tickets escalated (7 for "low confidence", 3 wrongly tagged "sensitive", 8 drafts blocked for an English body) and the 2 isolation traps (EV-FR-06, EV-PT-09) sent to the security queue instead of being refused.
+
+- **Where we disagreed (one sentence):** nowhere on the verdict — but grader 1's comments flag two passes that hide a router miss, EV-ES-02 and EV-EN-08: the ticket reached a person, yet for the wrong reason ("language not covered or unsure" on a grade or completion-record request); grader 2's comments name, for 7 escalated routine tickets, the KB article that should have answered them.
+- **What we changed, once (24 November 2026):** a pass for the wrong reason now also carries the tag **`wrong reason`** — in the guideline (§2, C1) and in the judge prompt (new `REASON` line). Without it, a router that escalates sensitive tickets by luck would score 100 % hand-over recall and hide the miss.
+- **Why 100 % is not yet proof:** the v0 prototype escalates every ticket (`report_v0.md`), so on v0 the graders and the judge only judge **C1, the decision** — a nearly mechanical comparison with the label. The draft criteria (C2–C5), where judgement is needed, are untested. Both rates are re-measured on the golden 30 as soon as the drafter writes in the ticket's language (spec v2, miss 2); we expect them to fall, and that is the number to defend.
+- **What the graders' comments add to `report_v0.md`:** three blocked drafts also cited the **wrong article** (EV-PL-01, EV-PL-05 → KB-CONTENT-07; EV-FR-03 → KB-BROWSER-02): cross-lingual retrieval is weak before the language problem even shows.
+- **Known biases of the judge:** (1) it is the same AI assistant that drafted the guideline, the judge prompt and the 49 new inputs, so it shares our framing of the cases; (2) before judging it saw the aggregate pass count of the graders (10 / 30), not their per-case verdicts; (3) the v0 drafter is a template (no LLM), so judge and drafter share no model family today — if the drafter moves to Claude, a different judge family should be used or the bias stated.
+- **Kappa:** with a 10 / 20 split and full agreement, kappa is 1.00; on future versions, where verdicts may be very unbalanced, we report the % agreement as the headline and kappa as a caution.
 
 ## 4 · Cadence
 Golden 30 + judge on every change (prompt, model, KB, rules) · the full 100 before each release · a human sample of 5 % of live answers per language every week (Session 7).
