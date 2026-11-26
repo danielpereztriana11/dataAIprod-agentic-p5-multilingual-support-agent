@@ -39,6 +39,6 @@ def check(draft_text, ticket_lang="en", retrieved=()):
             return "block", reason
     body = CITATION.sub("", draft_text)
     lang, _ = router.detect_language(body)
-    if lang != ticket_lang:
+    if lang != ticket_lang and not router.confirm_language(body, ticket_lang):
         return "block", f"language mismatch (ticket {ticket_lang}, draft {lang})"
     return "pass", ""

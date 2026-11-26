@@ -40,14 +40,15 @@ SECURITY = re.compile(
 def switch_state(lang):
     """⏻ The override switch, per language: 'L3' (agent sends) | 'L2' (a native speaker approves) | 'off' (person only)."""
     try:
-        return json.load(open(os.path.join(HERE, "switch.json"), encoding="utf-8")).get(lang, "off")
+        with open(os.path.join(HERE, "switch.json"), encoding="utf-8") as switch_file:
+            return json.load(switch_file).get(lang, "off")
     except Exception:
         return "off"  # if the switch cannot be read, fail safe: everything goes to a person
 
 
 def decide(r, text=""):
     """r = router.predict(text). Return (decision, reason). decision = 'draft' | 'escalate'."""
-    if r["language"] not in SUPPORTED or r["lang_conf"] < LANG_THRESHOLD:
+    if r["language"] not in SUPPORTED or (r["lang_conf"] < LANG_THRESHOLD and not r.get("language_confirmed", False)):
         return "escalate", "language not covered or unsure"
     if switch_state(r["language"]) == "off":
         return "escalate", "language switched off"
@@ -55,6 +56,6 @@ def decide(r, text=""):
         return "escalate", "security queue"
     if SENSITIVE.search(text) or r["category"] == "sensitive":
         return "escalate", "sensitive — person only"
-    if r["cat_conf"] < CAT_THRESHOLD:
+    if r["cat_conf"] < CAT_THRESHOLD and not (r["category"] == "how_do_i" and r.get("routine_confirmed", False)):
         return "escalate", "low confidence"
     return "draft", ""

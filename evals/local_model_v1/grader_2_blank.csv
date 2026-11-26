@@ -1,0 +1,11 @@
+﻿id,language_expected,expected_handoff,question,expected_action,decision,reason,draft,citations,sendable_yes_no,notes
+EV-AR-03,ar,no,"مسؤول: ""كيف أضيف مسؤولاً جديداً لمؤسستنا على المنصة؟""","Reply in Arabic with the steps (only an existing admin can add one), citing the article",draft,,"لإضافة مسؤول جديد إلى مؤسستنا على المنصة، يجب عليك أن تكون مستخدمًا مسؤولًا مسبقًا في المؤسسة. انتقل إلى **الإدارة → مستخدمي**، فتح تفاصيل المستخدم، اختر **الRoles → مسؤول المؤسسة**، ثم احفظ. المستخدم الجديد يحصل على رسالة إلكترونية.
+[KB-ADMIN-03 · Add an administrator]",KB-ADMIN-03 · Add an administrator (0.57),,
+EV-FR-03,fr,no,"Étudiante : ""Comment télécharger les supports d’un cours pour les lire hors connexion ?""","Répondre en français avec les étapes de téléchargement autorisées, et préciser que certains fichiers peuvent être désactivés par l’enseignant ; citer la KB.",draft,,"Pour télécharger les supports d'un cours hors connexion, suivez ces étapes :
+
+1. Ouvrez le cours.
+2. Aller dans la section **Ressources**.
+3. Cliquez sur l'icône de téléchargement adjacent à un fichier, ou sur **Télécharger tous** pour obtenir un fichier zip.
+
+Votre instructeur décide quelles fichiers peuvent être téléchargées.
+[KB-CONTENT-02 · Download course resources]",KB-CONTENT-02 · Download course resources (0.55),,

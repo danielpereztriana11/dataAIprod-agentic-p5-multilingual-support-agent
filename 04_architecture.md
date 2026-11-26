@@ -47,7 +47,7 @@ What happens when… (one line each)
 ## 6. The override switch ⏻
 - Who can switch it off: the Head of Support, by editing `prototype/switch.json` (no deployment); if the file cannot be read, every language is treated as **off** (fail safe).
 - Scope (one ticket · one user · everyone): **one language, for everyone** — L3 (the agent sends), L2 (a native speaker approves) or off (person only).
-- Tested on (date, by whom): [date], by [name] — French set to `off`, `python prototype/app.py "Comment changer ma photo de profil ?"` returned "escalate · language switched off"; set back to `L3`.
+- Tested: 26 November 2026, local prototype, by the Codex assistant — English set to `off`, a fictional English ticket returned `escalate · language switched off`, then the original switch file was restored. Daniel also rehearsed it in the local demo on 26 November 2026 and confirmed HUMAN HANDOFF for the English profile-photo question; English is now back to L3.
 
 ## 7. Data
 - Training / demo data (`data/`): `prototype/data/tickets_synthetic.csv` — 156 synthetic tickets (144 in the 6 languages — 24 per language — and 12 in Italian, German, Dutch, Korean for "other") written by the team for the router; `prototype/data/demo_tickets.csv` — 12 demo tickets; `prototype/kb/` — 35 fictional English help articles. All invented, no real data.
@@ -63,3 +63,7 @@ Copy the headline from `evals/report_v0.md`: *"<N> % of 'how do I' tickets got a
 1. A drafter that writes in the ticket's language (LLM from the passages only), so non-English drafts stop failing the language check.
 2. A router trained on more synthetic tickets, with the threshold calibrated on held-out synthetic data, not on the eval-set.
 3. Sensitive rules that fire on decisions ("change my grade"), not on topics ("export the grades"), and refusals with a cited article for isolation traps.
+
+## Current simplified demo (update; previous sections describe v0)
+
+The local browser interface now uses `prototype/simple_pipeline.py`: the existing language/category router and conservative handoff rules → multilingual semantic source lookup → local Ollama draft and source check → citation/language/policy check → demo answer or simulated handoff. Search declines ambiguous matches rather than invoking a separate reranking call in this demo. The draft/source check and language checks are imperfect. The UI is local and fictional; it does not send real replies or place tickets in a queue. The existing `evals/report_v0.md` and `evals/local_model_v1/` / `local_model_v2/` apply to earlier versions; no independent evaluation of this simplified flow has been completed.

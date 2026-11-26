@@ -15,7 +15,7 @@ def run_one(text):
         passages = retrieve.top_k(text)
         out = drafter.draft(text, passages, r["language"])
         if out == "NO_DRAFT":
-            decision, reason = "escalate", "no source found"
+            decision, reason = "escalate", "no source found" if not passages else "no draft (model unavailable or insufficient source)"
     status, why = policy.check(out, r["language"], passages)
     if decision == "draft" and status == "block":
         decision, reason = "escalate", "policy block: " + why
